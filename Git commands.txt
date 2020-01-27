@@ -1,0 +1,124 @@
+1. Tell Git who you are
+
+git config --global user.name “Name”
+git config –-global user.email “your_emailid”
+
+2. Create SSH keys:
+ssh-keygen –t rsa –C <your_emailid>
+cd .ssh
+Copy the RSA key from file id_rsa.pub which is public key
+Open the git server and add the user public key there.
+
+----------------------------------------------------------------------
+
+1. git init 
+will initialise the git to the local repository
+
+2. git clone <https://github.com/sivasankarkondabathini/docker-swarm.git>
+You will get the clone URL from GitHub or VSTS project
+
+3. git checkout origin/<branch> -b <local_branch>
+To checkout to specific branches like master or branch1
+
+4. git pull
+Merge central repository branch changes to local repository branch
+Do this for updating the code base everytime
+(git pull = git fetch+ merge )
+
+5. git fetch
+To list the updates of central repository, but no merge
+To check if central has any updates or not 
+
+6. git rebase -i origin/<branch>
+To update/rebase the local repo with specified remote branch
+Encrypt=False;TrustServerCertificae=True
+Rebase add the merged changes of remote branch on to the top of local changes 
+but checkout will erase local copy and creates new branch
+
+-----------------------
+Make changes to code and to push code changes into central repo.
+
+6. git status 
+Gives the state of files. (Unstage and Staged)
+
+7. git add <files to add> 
+Adds files to staged area
+
+8. git commit 
+   git commit -m "commit message"
+Adds files to local repo and ready to push
+
+this will ask to write a commit message.
+Commit message should be short and neat and should convey complete message of the change.
+below link gives the guidelines to write the commit message:
+http://www.mediawiki.org/wiki/Gerrit/Commit_message_guidelines
+
+
+After commit, even if we make changes to code and to make it to same prev commit again use amend option.
+This will append the changes to previous commit.
+
+git add <files to add>
+git commit --amend
+
+9. git log --d 
+To view commits and history
+
+10. git push origin master
+    git push origin HEAD:refs/for/<branch>
+
+11. git revert <commit-id>
+To revert submitted/commited changes. If a commit is submitted to a branch in central repo, there is no way to revert it except to make a revert commit.
+Revert creates a new commit mentioning what changes are reverted.
+
+12. git stash or git checkout <file>
+To revert uncommited data
+
+13. git status
+To check the status of files
+
+14. git branch
+    git branch -r
+To check the list of local branches 
+
+15. git tag -d <Tag>
+To assign a specific tag to top commit
+
+git push origin :refs/tags/Tag
+
+16. git log --d --oneline --graph
+    git log --pretty=format:"%h %cd | %s%d [%an]" --date=short
+To view commits graphically
+
+17. git clean -fd
+    git clean . -d -f
+To erase uncommited stuff
+
+18. git submodule update --init --recursive
+To update submodules if your repo containes many modules.
+
+19. git reset --hard HEAD~1
+To delete the created local commit, and this command only effective before pushing.
+
+20. git format-patch -1
+To convert commit to patch
+
+Change/alter remote branches/tags from locally:
+21. delelte remote branch:
+	git push origin --delete <remote_branchname>
+	git push origin :<remote_branchname>
+
+22. delete remote Tag:
+	git push origin :refs/tags/<tag-name>
+
+23. Git clone full command:
+    GIT_SUBMODULE_STRATEGY: none
+ ...
+  - mkdir -p $CI_PROJECT_DIR
+  - cd $CI_PROJECT_DIR
+  - git clone --progress $CI_REPOSITORY_URL . || /bin/true
+  - git remote set-url origin $CI_REPOSITORY_URL
+  - git fetch --progress --all --tags || sleep 3; git fetch --progress --all --tags
+  - git checkout -f -q $CI_COMMIT_SHA
+  - git submodule sync --recursive
+  - git submodule update --init --recursive --force
+

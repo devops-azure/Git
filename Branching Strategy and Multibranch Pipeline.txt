@@ -1,0 +1,61 @@
+1. Always developer should create a feature branch from develop for an assigned task (Either create on central or pull develop branch and create feature branch on local workstation)
+
+2. Work on the changes, Test them locally, create commit in central feature branch(using git push feature-branch, central repo is permitted to push to feature named branches)
+
+----------> CI triggers for a new change-set happened in feature named branch immedietely, Runs the Pipeline with following stages:
+	1. Pull the branch code with change-set
+	2. Build, Unit Test
+	3. Code Coverage
+	4. Package
+	5. Create Pull Request Automatically at last stage
+
+3. Create a Merge/Pull Request b.w feature and develop branch
+
+4. develop branch will be getting daily/regular Pull Requests from multiple feature branches/developers
+
+5. Check the changes and the conflicts between prev Pull Requests, resolve them and Merge it!!
+
+
+-----------> CI triggers for a new change-set happened in develop branch immedietely(or Scheduled daily--which brings multiple MR's happened on that particular day and deploy them), Runs the Pipeline with following stages:
+	1. Pull the develop branch code with change-set
+	2. Build, Unit Test
+	3. Code Coverage
+	4. Package
+	5. Publish Artifact(s) to Artifactory
+	6. Pull the Artificats and deploy them on Dev environment
+
+6. When the sprint ends, all of the changes merged in develop branch should go to QA environment for testing, so create a new branch called Release, create Pull Request against Release branch
+(Here, we can also promote the last build present in Artifactory to QA environment without code merging on Release branch)
+
+
+7. Merge the Pull Request on Release branch when the QA env is Ready to Test
+
+-----------> CI triggers for a new change-set happened in release branch immedietely, Runs the Pipeline with following stages:
+	1. Pull the release branch code with change-set
+	2. Build, Unit Test
+	3. Code Coverage
+	4. Package
+	5. Deploy the artifacts on QA environment
+	6. Run the Functional tests(for Release branch only)
+
+8. When QA validates/sign off the changes, manually deploy the artifact(s) to Non-Prod other environments.
+
+9. When Non-Prod validates/sign off the changes, manually deploy the artifact(s) to Production environment (OR) create a pull request between Release branch to master(called production) branch and merge the release changes.
+
+-----------> CI triggers for a new change-set happened in master branch immedietely, Runs the Pipeline with following stages:
+	1. Pull the release branch code with change-set
+	2. Build, Unit Test
+	3. Code Coverage
+	4. Package
+	5. Deploy the artifacts on Production environment
+
+
+
+-----------------------
+Scenarios:
+
+1. Single binray(.war type) file:
+
+
+
+

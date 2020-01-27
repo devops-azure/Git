@@ -1,0 +1,44 @@
+Branching strategies types:
+1. feature, develop, release, master, tags
+2. feature, develop, staging, release/master, tags
+
+ref: https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
+
+***
+branch naming:
+develop
+master
+staging
+release-1.0.0
+
+tags format: v1.0.0
+***
+
+1st approach)
+feature: Developer can create feature branches for every new changes and push the changes to central feature.
+         CI Triggers to validate the new changes(clone, build, unit test, coverage)
+Pull Request: Create new Pull request for new changes merge to develop. CI triggers on PR as well and Pipeline status is a pre-check for PR page.
+develop: Once PR merges in develop, CI validates and deploys to develop branch(upload artifacts to artifactory), extend till lower environments
+         deploy to staging and run all functional tests required.
+release: Once in a sprint create a new branch release-1.0.0 from develop, to promote for higher environments.(we can use this for staging and          other environments as well, sometimes they are not always ready with develop)
+master: once release is tested in stagng and other environments, create PR to master and merge the changes, master deploys to production, and         mark the commit with tag for referecne. 
+
+2nd approach)
+environment wise branches.. merges whenever the respective environment is free and ready for deployment.
+
+
+
+The overall flow of Gitflow is:
+
+A develop branch is created from master
+A release branch is created from develop
+Feature branches are created from develop
+When a feature is complete it is merged into the develop branch
+When the release branch is done it is merged into develop and master
+If an issue in master is detected a hotfix branch is created from master
+Once the hotfix is complete it is merged to both develop and master
+
+
+***
+SVN to Git Migration:
+https://www.atlassian.com/git/tutorials/svn-to-git-prepping-your-team-migration

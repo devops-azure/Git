@@ -1,0 +1,144 @@
+
+From server virtual machine:
+
+Create a group in Linux:
+
+root@docker:/home/docker# groupadd dev
+root@docker:/home/docker# useradd -G dev -d /home/git -m -s /bin/bash git
+
+This will create a group named "dev" and create the user named "git" and add the user "git" to "dev" group
+The home folder for git user is mentioned as /home/git
+
+Change/assign the password for git user:
+
+root@docker:/home/docker# passwd git
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+
+Login to the user git:
+root@docker:/home/docker# su git
+git@docker:/home/docker$
+
+git@docker:/home/docker$ cd
+git@docker:~$ pwd
+/home/git
+
+Create a project named "project" in server:
+
+git@docker:~$ mkdir project.git
+git@docker:~$ cd project.git/
+
+
+Now intialize the repository/project with git using git init command.
+Using git init with --bare option will hide the remote/server data to outer world, means no repository details will be available to see in server.
+This is for security purpose only. 
+
+
+git@docker:~/project.git$ git --bare init
+Initialized empty Git repository in /home/git/project.git/
+
+git@docker:~/project.git$ ls
+branches  config  description  HEAD  hooks  info  objects  refs
+
+
+Server setup is done with project project.git, now access this project from other vm's
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+From client/developer virtual machines:
+
+root@docker:/home/docker# groupadd dev
+root@docker:/home/docker# useradd -G dev -d /home/git_user1 -m -s /bin/bash git_user1
+
+root@docker:/home/docker# passwd git_user1
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+
+root@docker:/home/docker# su git_user1
+git_user1@docker:/home/docker$
+
+git_user1@docker:/home/docker$ cd
+git_user1@docker:~$ pwd
+/home/git_user1
+
+
+First command to access the server repo/project from client is cloning it
+
+
+Clone the project project.git from server:
+
+git_user1@docker:~$ git clone git@192.168.56.102:project.git
+Cloning into 'project'...
+The authenticity of host '192.168.56.102 (192.168.56.102)' can't be established.
+ECDSA key fingerprint is dc:e0:75:e7:a7:4c:d3:e8:ba:09:00:a3:e7:e8:4d:5a.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.56.102' (ECDSA) to the list of known hosts.
+git@192.168.56.102's password:
+warning: You appear to have cloned an empty repository.
+Checking connectivity... done.
+
+
+Project is cloned from server.
+Now check all provided git commands to see whether project cloned from server or not
+
+Do git happily.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Optional:
+
+To connet the server user without password from clinet ...client user ssh key should be added 
+in server user authorized keys file or from below command...........
+
+git_user1@docker:~$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/git_user1/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/git_user1/.ssh/id_rsa.
+Your public key has been saved in /home/git_user1/.ssh/id_rsa.pub.
+The key fingerprint is:
+32:3f:4f:ec:6d:12:2b:ff:01:a7:98:8e:9f:39:7d:25 git_user1@docker
+The key's randomart image is:
++--[ RSA 2048]----+
+|                 |
+|                 |
+|                 |
+|                 |
+|      o S . .    |
+|       + +.+E .  |
+|        =.+o.o   |
+|       ooB+.o.   |
+|      ..=++=o    |
++-----------------+
+
+
+git_user1@docker:~$ ssh-copy-id -i git@192.168.56.102
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+git@192.168.56.102's password:
+
+Number of key(s) added: 1
+
+Now try logging into the server machine with:   "ssh 'git@192.168.56.102'"
+and check to make sure that only the key(s) you wanted were added.
+
+git_user1@docker:~$ ssh git@192.168.56.102
+Last login: Sat Jun  3 14:04:38 2017 from 192.168.56.103
+git@docker:~$ 
+
+No password asked for ssh command because we have added ssh pulbic key of git_user1 into .ssh/authorized_keys file of 192.168.56.102 server.
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+Without local git server, use github to create a repository and try accessing it from client/developer machines in the same way.
+Clone, checkout and test it.
+
+Do git happily.
+
+
